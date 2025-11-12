@@ -1,0 +1,44 @@
+services:
+  postgres:
+    # É uma boa prática fixar a versão para evitar quebras inesperadas
+    image: pgvector/pgvector:pg16
+    container_name: paperless_vector_db
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "${DB_PORT}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama
+    container_name: ollama_service
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: unless-stopped
+
+  app:
+    build: .
+    container_name: streamlit_app_leis
+    ports:
+      - "8501:8501"
+    volumes:
+      # Mapeia o código local para o contêiner para atualizações fáceis
+      - ./:/app
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - ollama
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+  ollama_data:
+    driver: local

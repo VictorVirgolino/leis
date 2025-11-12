@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+env/
+
+# Environment variables
+.env
+.env.*
+
+# Streamlit
+.streamlit/local/
+
+# IDEs
+.idea/
+.vscode/
+
+# Logs
+*.log
